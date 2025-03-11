@@ -17,6 +17,10 @@ def can_partition(nums):
         >>> can_partition([1, 2, 3, 5])
         False
     """
+    # Empty list or single-element list cannot be partitioned
+    if len(nums) <= 1:
+        return False
+    
     # Check if the total sum is odd (cannot be divided into two equal subsets)
     total_sum = sum(nums)
     if total_sum % 2 != 0:
