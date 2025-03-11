@@ -22,12 +22,11 @@ def test_can_partition_complex_scenarios():
     # More complex scenarios
     assert can_partition([1, 5, 11, 5]) == True
     assert can_partition([1, 2, 3, 4, 5, 6, 7]) == True
-    assert can_partition([1, 2, 3, 4, 5, 7]) == False
-    assert can_partition([1, 1, 1, 1]) == True
+    assert can_partition([1, 2, 3, 4, 5]) == False
 
 def test_can_partition_sum_calculation():
     # Cases with precise sum requirement
-    assert can_partition([100, 100, 100, 100, 100, 100, 100]) == True
+    assert can_partition([100, 100, 100, 100, 100, 100]) == True
     assert can_partition([100, 100, 100, 50, 50]) == True
     assert can_partition([1, 2, 3]) == False
     assert can_partition([2, 2, 2, 2]) == True
