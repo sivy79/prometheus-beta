@@ -28,14 +28,17 @@ def can_partition(nums):
     
     target_sum = total_sum // 2
     
-    # Create a dynamic programming table
-    dp = [False] * (target_sum + 1)
-    dp[0] = True
+    # Dynamic programming: used a set for more memory-efficient tracking
+    possible_sums = {0}
     
-    # Iterate through each number in the input list
     for num in nums:
-        # We go backwards to avoid using the same number multiple times
-        for j in range(target_sum, num - 1, -1):
-            dp[j] = dp[j] or dp[j - num]
+        # Create a new set to avoid modifying the set during iteration
+        current_sums = possible_sums.copy()
+        for current_sum in current_sums:
+            new_sum = current_sum + num
+            if new_sum == target_sum:
+                return True
+            if new_sum < target_sum:
+                possible_sums.add(new_sum)
     
-    return dp[target_sum]
+    return False
