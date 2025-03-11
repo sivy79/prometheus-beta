@@ -28,5 +28,8 @@ def test_can_partition_sum_calculation():
     # Cases with precise sum requirement
     assert can_partition([100, 100, 100, 100, 100, 100]) == True
     assert can_partition([100, 100, 100, 50, 50]) == True
-    assert can_partition([1, 2, 3]) == False
     assert can_partition([2, 2, 2, 2]) == True
+    
+    # Non-partitionable sets
+    assert can_partition([1, 2, 3]) == False
+    assert can_partition([1, 2, 4]) == False
