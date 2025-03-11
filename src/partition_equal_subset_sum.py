@@ -21,28 +21,20 @@ def can_partition(nums):
     if len(nums) <= 1:
         return False
     
-    # Check if the total sum is odd (cannot be divided into two equal subsets)
+    # Calculate total sum and validate partition possibility
     total_sum = sum(nums)
     if total_sum % 2 != 0:
         return False
     
     target_sum = total_sum // 2
     
-    # Dynamic programming using a set
-    possible_sums = {0}
+    # Dynamic programming approach
+    dp = [False] * (target_sum + 1)
+    dp[0] = True
     
     for num in nums:
-        current_sums = set(current_sum + num for current_sum in possible_sums)
-        
-        # Check if target sum is achievable
-        if target_sum in current_sums:
-            return True
-        
-        # Update possible sums
-        possible_sums.update(current_sums)
-        
-        # Pruning: If set gets too large, stop
-        if len(possible_sums) > 2 * len(nums):
-            break
+        # Traverse backwards to prevent using the same element multiple times
+        for j in range(target_sum, num - 1, -1):
+            dp[j] = dp[j] or dp[j - num]
     
-    return False
+    return dp[target_sum]
