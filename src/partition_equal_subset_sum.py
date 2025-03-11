@@ -17,7 +17,7 @@ def can_partition(nums):
         >>> can_partition([1, 2, 3, 5])
         False
     """
-    # Empty list or single-element list cannot be partitioned
+    # Handle trivial cases first
     if len(nums) <= 1:
         return False
     
@@ -28,22 +28,25 @@ def can_partition(nums):
     
     target_sum = total_sum // 2
     
-    # Create a dynamic programming set
-    dp = {0}
+    # Speed optimization: If target sum is larger than list total, return False early
+    if target_sum > total_sum // 2:
+        return False
     
-    for num in nums:
-        # Create a copy to avoid modifying during iteration
-        current_sums = set(dp)
+    # Sort numbers to help early exit and pruning
+    nums.sort(reverse=True)
+    
+    # Recursive helper with memoization
+    def can_partition_recursive(index, current_sum):
+        # Base cases
+        if current_sum == 0:
+            return True
+        if index >= len(nums) or current_sum < 0:
+            return False
         
-        for current_sum in current_sums:
-            new_sum = current_sum + num
-            
-            # Check if we've found a subset that matches target
-            if new_sum == target_sum:
-                return True
-            
-            # Add new subset sum if within target
-            if new_sum < target_sum:
-                dp.add(new_sum)
+        # Try including or excluding current number
+        return (
+            can_partition_recursive(index + 1, current_sum - nums[index]) or  # Include
+            can_partition_recursive(index + 1, current_sum)  # Skip
+        )
     
-    return False
+    return can_partition_recursive(0, target_sum)
