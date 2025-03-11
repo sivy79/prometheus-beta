@@ -24,11 +24,11 @@ def log_json(json_obj, log_level='info', logger=None):
 
     # Validate log level
     log_levels = {
-        'debug': logging.debug,
-        'info': logging.info,
-        'warning': logging.warning,
-        'error': logging.error,
-        'critical': logging.critical
+        'debug': 'debug',
+        'info': 'info',
+        'warning': 'warning',
+        'error': 'error',
+        'critical': 'critical'
     }
 
     if log_level.lower() not in log_levels:
@@ -42,6 +42,7 @@ def log_json(json_obj, log_level='info', logger=None):
     formatted_json = json.dumps(json_obj, indent=2)
 
     # Log the formatted JSON
-    log_levels[log_level.lower()](formatted_json)
+    log_method = getattr(logger, log_level.lower())
+    log_method(formatted_json)
 
     return formatted_json
