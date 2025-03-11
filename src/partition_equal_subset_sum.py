@@ -28,25 +28,16 @@ def can_partition(nums):
     
     target_sum = total_sum // 2
     
-    # Immediate false for impossible configurations
-    if len(nums) < 2 or max(nums) > target_sum:
-        return False
+    # Dynamic programming solution
+    possible_sums = {0}
+    for num in nums:
+        new_sums = set()
+        for s in possible_sums:
+            new_sum = s + num
+            if new_sum == target_sum:
+                return True
+            if new_sum < target_sum:
+                new_sums.add(new_sum)
+        possible_sums.update(new_sums)
     
-    # Sort for better pruning
-    nums.sort()
-    
-    # Recursive solution with pruning
-    def can_subset_sum(index, current_sum):
-        # Base cases
-        if current_sum == 0:
-            return True
-        if index >= len(nums) or current_sum < 0:
-            return False
-        
-        # Try including or excluding current number
-        return (
-            can_subset_sum(index + 1, current_sum - nums[index]) or  # Include
-            can_subset_sum(index + 1, current_sum)  # Exclude
-        )
-    
-    return can_subset_sum(0, target_sum)
+    return False
