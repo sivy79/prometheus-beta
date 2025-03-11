@@ -9,7 +9,7 @@ def can_partition(nums):
         bool: True if the list can be partitioned into two subsets with equal sum, False otherwise
     
     Time Complexity: O(n * total_sum)
-    Space Complexity: O(total_sum)
+    Space Complexity: O(n * total_sum)
     
     Examples:
         >>> can_partition([1, 5, 11, 5])
@@ -28,17 +28,29 @@ def can_partition(nums):
     
     target_sum = total_sum // 2
     
-    # Dynamic programming: used a set for more memory-efficient tracking
-    possible_sums = {0}
+    # Memoization dictionary to cache sub-problem results
+    memo = {}
     
-    for num in nums:
-        # Create a new set to avoid modifying the set during iteration
-        current_sums = possible_sums.copy()
-        for current_sum in current_sums:
-            new_sum = current_sum + num
-            if new_sum == target_sum:
-                return True
-            if new_sum < target_sum:
-                possible_sums.add(new_sum)
+    def backtrack(index, current_sum):
+        # Base cases
+        if current_sum == 0:
+            return True
+        if index >= len(nums) or current_sum < 0:
+            return False
+        
+        # Check memoized results
+        key = (index, current_sum)
+        if key in memo:
+            return memo[key]
+        
+        # Try including or excluding current number
+        result = (
+            backtrack(index + 1, current_sum - nums[index]) or  # Include current number
+            backtrack(index + 1, current_sum)  # Exclude current number
+        )
+        
+        # Memoize and return result
+        memo[key] = result
+        return result
     
-    return False
+    return backtrack(0, target_sum)
