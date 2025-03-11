@@ -28,8 +28,12 @@ def can_partition(nums):
     
     target_sum = total_sum // 2
     
-    # Require at least two elements that combine to the target
-    if target_sum < sum(sorted(nums)[:2]):
+    # Require at least two elements
+    if len(nums) < 2:
+        return False
+    
+    # Immediate false for impossible small sums
+    if max(nums) > target_sum:
         return False
     
     # Dynamic programming solution
