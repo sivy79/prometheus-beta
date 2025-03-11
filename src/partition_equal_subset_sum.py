@@ -28,13 +28,22 @@ def can_partition(nums):
     
     target_sum = total_sum // 2
     
-    # Dynamic programming approach
-    dp = [False] * (target_sum + 1)
-    dp[0] = True
+    # Create a dynamic programming set
+    dp = {0}
     
     for num in nums:
-        # Traverse backwards to prevent using the same element multiple times
-        for j in range(target_sum, num - 1, -1):
-            dp[j] = dp[j] or dp[j - num]
+        # Create a copy to avoid modifying during iteration
+        current_sums = set(dp)
+        
+        for current_sum in current_sums:
+            new_sum = current_sum + num
+            
+            # Check if we've found a subset that matches target
+            if new_sum == target_sum:
+                return True
+            
+            # Add new subset sum if within target
+            if new_sum < target_sum:
+                dp.add(new_sum)
     
-    return dp[target_sum]
+    return False
