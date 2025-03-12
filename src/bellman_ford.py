@@ -14,18 +14,19 @@ def bellman_ford(graph: List[Tuple[int, int, int]], start: int, num_vertices: in
                                     or None if negative cycle is detected
     
     Raises:
-        ValueError: If graph is invalid or start vertex is out of range
+        ValueError: If start vertex is out of range
     """
     # Input validation
-    if not graph:
-        raise ValueError("Graph cannot be empty")
-    
     if start < 0 or start >= num_vertices:
         raise ValueError(f"Start vertex {start} is out of valid range")
     
     # Initialize distances
     distances = {v: float('inf') for v in range(num_vertices)}
     distances[start] = 0
+    
+    # If no graph edges, return initial distances (useful for single vertex)
+    if not graph:
+        return distances
     
     # Relax edges repeatedly
     for _ in range(num_vertices - 1):
