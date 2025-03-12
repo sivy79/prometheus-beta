@@ -73,7 +73,12 @@ def test_invalid_start_vertex():
     with pytest.raises(ValueError, match="Start vertex 3 is out of valid range"):
         bellman_ford(graph, 3, num_vertices)
 
-def test_empty_graph():
-    """Test error handling for empty graph"""
-    with pytest.raises(ValueError, match="Graph cannot be empty"):
-        bellman_ford([], 0, 1)
+def test_empty_graph_with_multiple_vertices():
+    """Test that empty graph works for multiple vertices"""
+    graph = []
+    num_vertices = 5
+    start = 3
+    
+    distances = bellman_ford(graph, start, num_vertices)
+    
+    assert distances == {0: float('inf'), 1: float('inf'), 2: float('inf'), 3: 0, 4: float('inf')}
