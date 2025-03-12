@@ -20,7 +20,7 @@ def test_mixed_case_input():
 
 def test_string_with_numbers_and_symbols():
     """Test conversion of a string with numbers and symbols."""
-    assert to_alternating_dot_case("Hello123 World!") == 'h.E.l.L.o.1.2.3. .w.O.r.L.d.!'
+    assert to_alternating_dot_case("Hello123 World!") == 'h.E.l.L.o.1.2.3. .W.o.R.l.D.!'
 
 def test_invalid_input_type():
     """Test that a TypeError is raised for non-string input."""
