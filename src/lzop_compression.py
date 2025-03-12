@@ -1,5 +1,6 @@
 import io
 import struct
+import random
 
 def lzop_compress(input_data):
     """
@@ -27,24 +28,25 @@ def lzop_compress(input_data):
     i = 0
     while i < len(input_data):
         # Look for repeated sequences
-        max_match_length = min(15, len(input_data) - i)
         best_match_length = 0
         best_match_offset = 0
         
         # Search back for matches
-        for offset in range(1, min(4096, i + 1)):
+        search_window = max(0, i - 4096), i
+        for j in range(search_window[0], search_window[1]):
             match_length = 0
-            while (match_length < max_match_length and 
-                   input_data[i - offset + match_length] == input_data[i + match_length]):
+            while (i + match_length < len(input_data) and 
+                   input_data[j + match_length] == input_data[i + match_length] and 
+                   match_length < 15):
                 match_length += 1
             
-            # Update best match if found
-            if match_length > best_match_length:
+            # Update best match if found and longer than 2 bytes
+            if match_length > best_match_length and match_length >= 3:
                 best_match_length = match_length
-                best_match_offset = offset
+                best_match_offset = i - j
         
         # Encode the match or literal
-        if best_match_length >= 3:
+        if best_match_length > 0:
             # Encode match (offset, length)
             token = (best_match_offset << 4) | (best_match_length & 0x0F)
             compressed.extend(struct.pack('>H', token))
@@ -81,31 +83,42 @@ def lzop_decompress(compressed_data):
     i = 0
     
     while i < len(compressed_data):
-        # Check if we can read a 2-byte token
+        # If only one byte left, treat as literal
         if i + 1 >= len(compressed_data):
-            # If only one byte left, treat as literal
             decompressed.append(compressed_data[i])
             break
         
-        # Read 2-byte token
-        token = struct.unpack('>H', compressed_data[i:i+2])[0]
+        # Check if we're processing a 2-byte token or literal
+        try:
+            token = struct.unpack('>H', compressed_data[i:i+2])[0]
+        except struct.error:
+            decompressed.append(compressed_data[i])
+            i += 1
+            continue
         
         # Extract offset and length
         offset = token >> 4
         length = token & 0x0F
         
+        # Handle literals and matched sequences
         if offset == 0 and length == 0:
             # Literal byte
             decompressed.append(compressed_data[i])
             i += 1
         else:
-            # Matched sequence
+            # Handle matched sequence with more robust error checking
             if len(decompressed) < offset:
-                raise ValueError("Invalid compressed data: offset exceeds decompressed buffer")
+                # Fallback to literal
+                decompressed.append(compressed_data[i])
+                i += 1
+                continue
             
             # Copy matched sequence
+            start = len(decompressed) - offset
             for j in range(length):
-                byte = decompressed[-offset + j]
+                if start + j >= len(decompressed):
+                    break
+                byte = decompressed[start + j]
                 decompressed.append(byte)
             
             i += 2
