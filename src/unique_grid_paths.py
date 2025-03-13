@@ -35,6 +35,11 @@ def find_prime_path(grid: List[List[int]]) -> List[Tuple[int, int]]:
     if not grid or not grid[0]:
         raise ValueError("Grid cannot be empty")
     
+    # Special case for single cell grid
+    rows, cols = len(grid), len(grid[0])
+    if rows == 1 and cols == 1 and is_prime(grid[0][0]):
+        return [(0, 0)]
+    
     rows, cols = len(grid), len(grid[0])
     visited = set()
     
