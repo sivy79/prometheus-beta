@@ -10,11 +10,11 @@ def test_remove_duplicates_basic():
 def test_remove_duplicates_preserves_order():
     """Ensure the original order of characters is maintained."""
     assert remove_duplicates("cabbage") == "cabge"
-    assert remove_duplicates("Mississippi") == "Mips"
+    assert remove_duplicates("Mississippi") == "Misp"
 
 def test_remove_duplicates_mixed_case():
     """Test duplicate removal with mixed case characters."""
-    assert remove_duplicates("HelloWorld") == "Helowrd"
+    assert remove_duplicates("HelloWorld") == "HeloWrd"
 
 def test_remove_duplicates_error_handling():
     """Test error handling for invalid input types."""
